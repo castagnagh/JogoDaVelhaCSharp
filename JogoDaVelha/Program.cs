@@ -13,13 +13,24 @@ namespace JogoDaVelha
             int escolha = int.Parse(Console.ReadLine());
             if (escolha == 1)
             {
-                //logica para vs pessoa
+                //opção = 1 (logica para vs pessoa)
                 inicializaTabuleiro();
                 while (true)
                 {
                     escolhaJogador();
                     exibirTabuleiro();
-                    //verificaVencedor();
+                    if (verificaVencedor('X'))
+                    {
+                        Console.WriteLine("---------PARABÉNS---------");
+                        Console.WriteLine("O jogador X ganhou o jogo");
+                        return;
+                    }
+                    else if (verificaVencedor('O'))
+                    {
+                        Console.WriteLine("---------PARABÉNS---------");
+                        Console.WriteLine("O jogador O ganhou o jogo");
+                        return;
+                    }
                 }
             }
             else if (escolha == 2)
@@ -68,9 +79,9 @@ namespace JogoDaVelha
         //metodo criado para jogada do Jogador vs Jogador
         static void escolhaJogador()
         {
-            Console.WriteLine("Escolha uma linha: ");
+            Console.Write("Escolha uma linha: ");
             int linha = int.Parse(Console.ReadLine());
-            Console.WriteLine("Escolha uma coluna: ");
+            Console.Write("Escolha uma coluna: ");
             int coluna = int.Parse(Console.ReadLine());
 
             //verifica se a posição esta ocupada e qual jogador esta jogando se X ou O
@@ -83,7 +94,7 @@ namespace JogoDaVelha
                 }
                 else
                 {
-                    tabuleiro[linha, coluna] = '0';
+                    tabuleiro[linha, coluna] = 'O';
                 }
                 numeroJogadas++;
             }
@@ -97,7 +108,7 @@ namespace JogoDaVelha
             }
         }
 
-        //metodo criado para exibir o tabuleiro depois do jogador escolher a posição
+        //metodo criado para exibir o tabuleiro depois do jogador escolher a possição
         static void exibirTabuleiro()
         {
             for (int i = 0; i < tabuleiro.GetLength(0); i++)
@@ -108,6 +119,47 @@ namespace JogoDaVelha
                 }
                 Console.WriteLine();
             }
+        }
+
+        static bool verificaVencedor(char simbolo)
+        {
+            bool status = false;
+            //testando as horizontais
+            if (tabuleiro[0, 0] == tabuleiro[0, 1] && tabuleiro[0, 1] == tabuleiro[0, 2] && tabuleiro[0, 2] == simbolo)
+            {
+                status = true;
+            }
+            else if (tabuleiro[1, 0] == tabuleiro[1, 1] && tabuleiro[1, 1] == tabuleiro[1, 2] && tabuleiro[1, 2] == simbolo)
+            {
+                status = true;
+            }
+            else if (tabuleiro[2, 0] == tabuleiro[2, 1] && tabuleiro[2, 1] == tabuleiro[2, 2] && tabuleiro[2, 2] == simbolo)
+            {
+                status = true;
+            }
+            //testando as verticais
+            else if (tabuleiro[0, 0] == tabuleiro[1, 0] && tabuleiro[1, 0] == tabuleiro[2, 0] && tabuleiro[2, 0] == simbolo)
+            {
+                status = true;
+            }
+            else if (tabuleiro[0, 1] == tabuleiro[1, 1] && tabuleiro[1, 1] == tabuleiro[2, 1] && tabuleiro[2, 1] == simbolo)
+            {
+                status = true;
+            }
+            else if (tabuleiro[0, 2] == tabuleiro[1, 2] && tabuleiro[1, 2] == tabuleiro[2, 2] && tabuleiro[2, 2] == simbolo)
+            {
+                status = true;
+            }
+            //testando verticais
+            else if (tabuleiro[0, 0] == tabuleiro[1, 1] && tabuleiro[1, 1] == tabuleiro[2, 2] && tabuleiro[2, 2] == simbolo)
+            {
+                status = true;
+            }
+            else if (tabuleiro[0, 2] == tabuleiro[1, 1] && tabuleiro[1, 1] == tabuleiro[2, 0] && tabuleiro[2, 0] == simbolo)
+            {
+                status = true;
+            }
+            return status;
         }
     }
 }
