@@ -51,60 +51,55 @@ namespace JogoDaVelha
                 //se tudo isso correr bem, então apartir daqui pode ser jogado qualquer posição aleatória e dara sempre velha
                 Console.WriteLine("Jogo da velha iniciado");
                 inicializaTabuleiro();
+                //primeira jogada é no CENTRO jogada pelo computador -> tabuleiro[1,1]
                 tabuleiro[1, 1] = 'X';
                 while (true)
                 {
                     exibirTabuleiro();
-                    //jogador JOGA
+                    //jogador JOGA 
                     jogadorJogaVsPC();
+                    //aqui eu faço uma condição pra avaliar o centro (não sei se é necessario)
                     if (tabuleiro[1, 1] != '?')
                     {
-                        //2 PASSO - PREENCHER OS CANTOS
+                        //2 PASSO - PREENCHER OS CANTOS -> JOGADA DO COMPUTADOR, CONFORME A LÓGICA EXPLICADA A CIMA, O PROXIMO PASSO PARA O COMPUTADOR VENCER
+                        //É PREENCHER OS CANTOS 
                         preencheCantos();
                         exibirTabuleiro();
+                        
                         jogadorJogaVsPC();
-                        //3 PASSO
+                        //3 PASSO - VERIFICAR SE TEM DOIS ELEMENTOS NA MESMA LINHA, COLUNA E VERTICAL, CASO TENHA ENTÃO COMPLETA COM X A POSIÇÃO VAZIA
                         //verifica se tem dois X na mesma linha, coluna ou vertical e coloca o terceiro X na posição que esta vazia -> (?)
                         verificaLinha();
-                        exibirTabuleiro();
-                        if (verificaVencedor('X'))
-                        {
-                            Console.WriteLine("---------DERROTA---------");
-                            Console.WriteLine("O Computador ganhou o jogo");
-                            return;
-                        }
-                        else if (verificaVencedor('O'))
-                        {
-                            Console.WriteLine("---------PARABÉNS---------");
-                            Console.WriteLine("Você ganhou o jogo");
-                            return;
-                        }
-                        else
-                        {
-                            verificaEmpate();
-                        }
-                        jogadorJogaVsPC();
-                        exibirTabuleiro();
+
                         
-
-                        exibirTabuleiro();
-                        if (verificaVencedor('X'))
+                        //aqui já é possivel alguem ter ganhado, então verifica o vencedor
+                        while (true)
                         {
-                            Console.WriteLine("---------DERROTA---------");
-                            Console.WriteLine("O Computador ganhou o jogo");
-                            return;
+                            exibirTabuleiro();
+                            if (verificaVencedor('X'))
+                            {
+                                Console.WriteLine("---------DERROTA---------");
+                                Console.WriteLine("O Computador ganhou o jogo");
+                                return;
+                            }
+                            else if (verificaVencedor('O'))
+                            {
+                                Console.WriteLine("---------PARABÉNS---------");
+                                Console.WriteLine("Você ganhou o jogo");
+                                return;
+                            }
+                            else
+                            {
+                                verificaEmpate();
+                            }
+                            //caso não tenha um vencedor é a vez do Jogador
+                            jogadorJogaVsPC();
+                            //aqui o computador pode jogar aleatóriamente porque se chegou aqui COM CERTEZA ira dar VELHA
+                            jogadaAleatoriaPC();
+                            exibirTabuleiro();
+                            jogadorJogaVsPC();
+                            jogadaAleatoriaPC();
                         }
-                        else if (verificaVencedor('O'))
-                        {
-                            Console.WriteLine("---------PARABÉNS---------");
-                            Console.WriteLine("Você ganhou o jogo");
-                            return;
-                        }
-                        else
-                        {
-                            verificaEmpate();
-                        }
-
                     }
                 }
             }
@@ -373,14 +368,17 @@ namespace JogoDaVelha
                     if (tabuleiro[i, j] == '?')
                     {
                         tabuleiro[i, j] = 'X';
+                        break;
                     }
                 }
+                break;
             }
         }
 
         //metodo criado para exibir o tabuleiro depois do jogador escolher a possição
         static void exibirTabuleiro()
         {
+            Console.WriteLine();
             for (int i = 0; i < tabuleiro.GetLength(0); i++)
             {
                 for (int j = 0; j < tabuleiro.GetLength(1); j++)
