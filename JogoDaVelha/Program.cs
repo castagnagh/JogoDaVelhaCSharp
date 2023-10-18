@@ -13,8 +13,9 @@ namespace JogoDaVelha
             {
                 exibirInstrucoes();
                 //escolha da opção mostrada nas instrucoes
-                int escolha = int.Parse(Console.ReadLine());
-                if (escolha == 1)
+                string escolha = Console.ReadLine();
+                Console.Clear();
+                if (escolha == "1")
                 {
                     int jogadas = 0;
                     bool jogoDecidido = false;
@@ -46,7 +47,7 @@ namespace JogoDaVelha
                         jogadas++;
                     }
                 }
-                else if (escolha == 2)
+                else if (escolha == "2")
                 {
                     int jogadas = 0;
                     bool jogoDecidido = false;
@@ -124,29 +125,35 @@ namespace JogoDaVelha
                 Console.WriteLine("S - para SIM");
                 Console.WriteLine("Qualquer tecla para encerrar!");
                 continuar = char.Parse(Console.ReadLine());
+                Console.Clear();
+                numeroJogadas = 0;
 
             }
         }
 
         static void exibirInstrucoes()
         {
-            Console.WriteLine("========================REGRAS=========================");
-            Console.WriteLine("* - Para jogar você deve escolher a linha e a coluna;");
-            Console.WriteLine("* - A Linha (L) e a Coluna(C) começando em 0 e terminando em 2.");
+            Console.WriteLine("                                       JOGO DA VELHA");
+            Console.WriteLine();
+            Console.WriteLine("===========================================REGRAS===========================================");
+            Console.WriteLine();
+            Console.WriteLine("* - Para jogar você deve escolher a linha e a coluna, apertar ENTER após cada escolha;");
+            Console.WriteLine("* - A Linha (L) e a Coluna(C) começando em 1 e terminando em 3, representadas no desenho abaixo.");
             Console.WriteLine("* - O primeiro a jogar sempre é o X");
             Console.WriteLine("* - Caso escolha jogar contra o Computador ele SEMPRE será o X");
             Console.WriteLine();
-            Console.WriteLine("                       C:0   C:1   C:2");
+            Console.WriteLine("                       C:1   C:2   C:3");
             Console.WriteLine();
-            Console.WriteLine("                 L:0    ?     ?     ?");
             Console.WriteLine("                 L:1    ?     ?     ?");
             Console.WriteLine("                 L:2    ?     ?     ?");
+            Console.WriteLine("                 L:3    ?     ?     ?");
             Console.WriteLine();
             Console.WriteLine("========================ESCOLHA========================");
-            Console.WriteLine("1 - Jogar contra Jogador");
-            Console.WriteLine("2 - Jogar contra Computador");
             Console.WriteLine();
-            Console.WriteLine("OBS: Para sair digite qualquer tecla!");
+            Console.WriteLine("Digite 1 para Player vs Player");
+            Console.WriteLine("Digite 2 para Computador vs Player");
+            Console.WriteLine();
+            Console.WriteLine("Digite QUALQUER TECLA para sair");
         }
 
         //mostra a matriz inicial (inicializa tabuleiro), preenche todas as posições com '?'
@@ -175,22 +182,22 @@ namespace JogoDaVelha
                 Console.WriteLine("VEZ JOGADOR '0': ");
 
             }
-            Console.Write("Escolha uma linha: ");
+            Console.Write("Escolha uma linha (L): ");
             int linha = int.Parse(Console.ReadLine());
-            Console.Write("Escolha uma coluna: ");
+            Console.Write("Escolha uma coluna (C): ");
             int coluna = int.Parse(Console.ReadLine());
 
             //verifica se a posição esta ocupada e qual jogador esta jogando se X ou O
             //-> PAR para o Jogador X e IMPAR para o Jogador 0
-            if (tabuleiro[linha, coluna] == '?')
+            if (tabuleiro[linha - 1, coluna - 1] == '?')
             {
                 if (numeroJogadas % 2 == 0)
                 {
-                    tabuleiro[linha, coluna] = 'X';
+                    tabuleiro[linha - 1, coluna - 1] = 'X';
                 }
                 else
                 {
-                    tabuleiro[linha, coluna] = 'O';
+                    tabuleiro[linha - 1, coluna - 1] = 'O';
                 }
                 Console.Clear();
                 numeroJogadas++;
@@ -208,16 +215,18 @@ namespace JogoDaVelha
         //jogadorJogaVsPC -> Metodo implementado para Player vs PC
         static void jogadorJogaVsPC()
         {
-            Console.Write("Informe linha: ");
+            Console.Write("Informe linha (L): ");
             int linha = int.Parse(Console.ReadLine());
-            Console.Write("Informe coluna: ");
+            Console.Write("Informe coluna (C): ");
             int coluna = int.Parse(Console.ReadLine());
-            if (tabuleiro[linha, coluna] == '?')
+            Console.Clear();
+            if (tabuleiro[linha - 1, coluna - 1] == '?')
             {
-                tabuleiro[linha, coluna] = 'O';
+                tabuleiro[linha - 1, coluna - 1] = 'O';
             }
             else
             {
+                exibirTabuleiro();
                 Console.WriteLine("Posição já ocupada, escolha uma posição novamente");
                 jogadorJogaVsPC();
             }
@@ -405,17 +414,20 @@ namespace JogoDaVelha
         //metodo criado para exibir o tabuleiro depois do jogador escolher a posição
         static void exibirTabuleiro()
         {
+            Console.WriteLine("         C:1 C:2 C:3");
             Console.WriteLine();
             for (int i = 0; i < tabuleiro.GetLength(0); i++)
             {
                 Console.Write("    ");
+                Console.Write("L:" + (i+1));
+                Console.Write("   ");
                 for (int j = 0; j < tabuleiro.GetLength(1); j++)
                 {
                     Console.Write(tabuleiro[i, j]);
                     if (j < 2) Console.Write(" | ");
                 }
                 Console.WriteLine();
-                if (i < 2) Console.WriteLine("    ----------");
+                if (i < 2) Console.WriteLine("         ----------");
             }
             Console.WriteLine();
         }
