@@ -8,148 +8,123 @@ namespace JogoDaVelha
         public static char[,] tabuleiro = new char[3, 3];
         static void Main(string[] args)
         {
-            exibirInstrucoes();
-            //escolha da opção mostrada nas instrucoes
-            int escolha = int.Parse(Console.ReadLine());
-            if (escolha == 1)
+            char continuar = 'S';
+            while (continuar == 'S')
             {
-                //opção = 1 (logica para vs pessoa)
-                inicializaTabuleiro();
-                exibirTabuleiro();
-                while (true)
+                exibirInstrucoes();
+                //escolha da opção mostrada nas instrucoes
+                int escolha = int.Parse(Console.ReadLine());
+                if (escolha == 1)
                 {
-                    escolhaJogador();
+                    int jogadas = 0;
+                    bool jogoDecidido = false;
+                    //opção = 1 (logica para vs pessoa)
+                    inicializaTabuleiro();
                     exibirTabuleiro();
-                    if (verificaVencedor('X'))
+                    while (!jogoDecidido)
                     {
-                        Console.WriteLine("---------PARABÉNS---------");
-                        Console.WriteLine("O jogador X ganhou o jogo");
-                        return;
-                    }
-                    else if (verificaVencedor('O'))
-                    {
-                        Console.WriteLine("---------PARABÉNS---------");
-                        Console.WriteLine("O jogador O ganhou o jogo");
-                        return;
-                    }
-                    else if (verificaEmpate())
-                    {
-                        Console.WriteLine("-----------EMPATE-----------");
-                        Console.WriteLine("Não foi dessa vez, deu VELHA");
-                        return;
+                        escolhaJogador();
+                        exibirTabuleiro();
+                        if (verificaVencedor('X'))
+                        {
+                            Console.WriteLine("---------PARABÉNS---------");
+                            Console.WriteLine("O jogador X ganhou o jogo");
+                            jogoDecidido = true;
+                        }
+                        else if (verificaVencedor('O'))
+                        {
+                            Console.WriteLine("---------PARABÉNS---------");
+                            Console.WriteLine("O jogador O ganhou o jogo");
+                            jogoDecidido = true;
+                        }
+                        else if (jogadas >= 8)
+                        {
+                            Console.WriteLine("-----------EMPATE-----------");
+                            Console.WriteLine("Não foi dessa vez, deu VELHA");
+                            jogoDecidido = true;
+                        }
+                        jogadas++;
                     }
                 }
-            }
-            else if (escolha == 2)
-            {
-                //logica para vs computador. O computador sempre começando com X
-                //o computador sempre tem que começar jogando no CENTRO -> tabuleiro[1,1]
-                //depois a lógica é ele jogar em um dos cantos (tabuleiro[0,0], ...02, ...20, ... 22
-                //depois é analisar se tem dois X em uma linha, coluna ou vertical e completar o 3º X para ser ganhador
-                //caso não tenha dois X na mesma linha, onde a 3º posição não esteja completada, por exemplo -> X X O
-                //deve analisar o adversário para ver se ele ja tem 2 casas em um linha, coluna ou vertical e BLOQUEAR
-                //caso não tenha duas casas o Computador deve jogar em um dos cantos
-                //e o processo repetir novamente
-                //se tudo isso correr bem, então apartir daqui pode ser jogado qualquer posição aleatória e dara sempre velha
-                Console.WriteLine("Jogo da velha iniciado");
-                inicializaTabuleiro();
-                while (true)
+                else if (escolha == 2)
                 {
+                    int jogadas = 0;
+                    bool jogoDecidido = false;
 
-                    //criando laço for para executar esse bloco de comando 2 vezes (são as duas primeiras jogadas do computador e do player, 2 vezes a mesma coisa)
-                    for (int i = 0; i <= 3; i++)
-                    {
-                        //esse metodo verifica a linha ele identifica onde na linha, coluna ou vertical tem dois elementos, seja X ou O...
-                        //caso ele seja TRUE, então ele acessa o metodo preencheTerceiraPosição() com o X (pois é a vez do computador)...
-                        //isso faz com que o palyer, caso ja tenha 2 bolinhas posicionadas não ganhe, pois o X é preenchido na 3ª posicão
-                        if (verificaLinha())
-                        {
-                            preencheTerceiraPosicao();
-                        }
-                        else //se não tiver aquela condição, então ele preenche os cantos novamente, pois para ele ganhar, deve-se ter 3 X nos cantos
-                        {
-                            preencheCantos();
-                        }
-                        exibirTabuleiro();
-                        jogadorJogaVsPC();
-                    }
+                    inicializaTabuleiro();
 
-                    //aqui ele verifica o vencedor, pois pode ser que tenha um vencedor aqui (já passou nesse exato momento a 3ª jogada)
-                    if (verificaVencedor('X'))
+                    while (!jogoDecidido)
                     {
-                        Console.WriteLine("---------DERROTA---------");
-                        Console.WriteLine("O Computador ganhou o jogo");
-                        return;
-                    }
-                    else if (verificaVencedor('O'))
-                    {
-                        Console.WriteLine("---------PARABÉNS---------");
-                        Console.WriteLine("Você ganhou o jogo");
-                        return;
-                    }
-                    else if (verificaEmpate())
-                    {
-                        Console.WriteLine("--------------EMPATE--------------");
-                        Console.WriteLine("Bah, não foi dessa vez! Deu VELHA!");
-                        return;
-                    }
-                    else
-                    {
-                        //aqui testo novamente se tem 2 elementos na mesma linha, coluna ou vertical (teste para O e para X)... se dois elementos X na mesma linha, coluna ou vertical então o X é marcado.. e assim para a O
-                        if (verificaLinha())
+                        // Verificar se é a vez do computador (X) ou do jogador (O)
+                        char jogadorAtual;
+
+                        if (jogadas % 2 == 0)
                         {
-                            //se tiver, preenche com o X na posição...
-                            preencheTerceiraPosicao();
+                            jogadorAtual = 'X';
+                            Console.WriteLine("JOGADA DO COMPUTADOR: ");
                         }
                         else
                         {
-                            //senão tiver, então o PC joga aleatóriamente, pois ja não é mais possivel uma vitória, e sim um EMPATE
-                            jogadaAleatoriaPC();
-                        }
-                        exibirTabuleiro();
+                            jogadorAtual = 'O';
+                            Console.WriteLine("SUA VEZ");
 
-                        jogadorJogaVsPC();
-                        if (verificaLinha())
+                        }
+
+                        if (jogadorAtual == 'X')
                         {
-                            preencheTerceiraPosicao();
+                            //aqui testo se tem 2 elementos na mesma linha, coluna ou vertical (teste para O e para X)...
+                            //se dois elementos X na mesma linha, coluna ou vertical então o X é marcado.. e assim para caso tiver dois elementos O
+                            if (verificaLinha())
+                            {
+                                preencheTerceiraPosicao();
+                                exibirTabuleiro();
+                            }
+                            else //se não tem, então ele preenche os cantos (jogada inicial)
+                            {
+                                preencheCantos();
+                                exibirTabuleiro();
+                            }
                         }
                         else
                         {
-                            jogadaAleatoriaPC();
+                            jogadorJogaVsPC();
                         }
-                        exibirTabuleiro();
 
                         if (verificaVencedor('X'))
                         {
                             Console.WriteLine("---------DERROTA---------");
                             Console.WriteLine("O Computador ganhou o jogo");
-                            return;
+                            jogoDecidido = true;
                         }
                         else if (verificaVencedor('O'))
                         {
                             Console.WriteLine("---------PARABÉNS---------");
                             Console.WriteLine("Você ganhou o jogo");
-                            return;
+                            jogoDecidido = true;
                         }
-                        else if (verificaEmpate())
+                        else if (jogadas >= 8)
                         {
-                            Console.WriteLine("--------------EMPATE--------------");
-                            Console.WriteLine("Bah, não foi dessa vez! Deu VELHA!");
+                            Console.WriteLine("-----------EMPATE-----------");
+                            Console.WriteLine("Não foi dessa vez, deu VELHA");
+                            jogoDecidido = true;
                         }
+
+                        //incrementa numero de jogadas, para verificar quem joga e se há empate
+                        jogadas++;
                     }
                 }
+                else
+                {
+                    Console.WriteLine("Fim do jogo!");
+                    return;
+                }
+                Console.WriteLine();
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("Deseja jogar outra vez?");
+                Console.WriteLine("S - para SIM");
+                Console.WriteLine("Qualquer tecla para encerrar!");
+                continuar = char.Parse(Console.ReadLine());
 
-
-
-
-
-
-
-            }
-            else
-            {
-                Console.WriteLine("Fim do jogo!");
-                return;
             }
         }
 
@@ -183,7 +158,6 @@ namespace JogoDaVelha
                 {
                     tabuleiro[i, j] = '?';
                 }
-                Console.WriteLine();
             }
         }
         //variavel criada para verificar se a jogada é PAR ou IMPAR
@@ -192,6 +166,15 @@ namespace JogoDaVelha
         //metodo criado para jogada do Jogador vs Jogador
         static void escolhaJogador()
         {
+            if (numeroJogadas % 2 == 0)
+            {
+                Console.WriteLine("VEZ JOGADOR 'X': ");
+            }
+            else
+            {
+                Console.WriteLine("VEZ JOGADOR '0': ");
+
+            }
             Console.Write("Escolha uma linha: ");
             int linha = int.Parse(Console.ReadLine());
             Console.Write("Escolha uma coluna: ");
@@ -209,11 +192,12 @@ namespace JogoDaVelha
                 {
                     tabuleiro[linha, coluna] = 'O';
                 }
+                Console.Clear();
                 numeroJogadas++;
             }
             else
             {
-                //Console.Clear();
+                Console.Clear();
                 Console.WriteLine("Posição já ocupada, escolha uma posição novamente");
                 exibirTabuleiro();
                 escolhaJogador();
@@ -221,44 +205,12 @@ namespace JogoDaVelha
             }
         }
 
-        static void escolhaComputador()
-        {
-
-            Console.Write("Escolha uma linha: ");
-            int linha = int.Parse(Console.ReadLine());
-            Console.Write("Escolha uma coluna: ");
-            int coluna = int.Parse(Console.ReadLine());
-
-            //verifica se a posição esta ocupada e qual jogador esta jogando se X ou O
-            //-> PAR para o Jogador X e IMPAR para o Jogador 0
-            if (tabuleiro[linha, coluna] == '?')
-            {
-                if (numeroJogadas % 2 == 0)
-                {
-                    tabuleiro[linha, coluna] = 'O';
-                }
-                else
-                {
-                    tabuleiro[linha, coluna] = 'X';
-                }
-                numeroJogadas++;
-            }
-            else
-            {
-                //Console.Clear();
-                Console.WriteLine("Posição já ocupada, escolha uma posição novamente");
-                exibirTabuleiro();
-                escolhaComputador();
-                return;
-            }
-        }
-
-        //jogadorJogaVsPC
+        //jogadorJogaVsPC -> Metodo implementado para Player vs PC
         static void jogadorJogaVsPC()
         {
-            Console.WriteLine("Informe linha: ");
+            Console.Write("Informe linha: ");
             int linha = int.Parse(Console.ReadLine());
-            Console.WriteLine("Informe coluna: ");
+            Console.Write("Informe coluna: ");
             int coluna = int.Parse(Console.ReadLine());
             if (tabuleiro[linha, coluna] == '?')
             {
@@ -295,115 +247,53 @@ namespace JogoDaVelha
             }
         }
 
-        //PASSO 3 - Verifica dois X na mesma linha, coluna e vertical para preenchimento do 3º X
+        //PASSO 3 - Verifica dois X na mesma linha, coluna e vertical para preenchimento do 3º X -> metodo criado apenas para validar, pois precisava fazer o teste na condição do player vs computador
         static bool verificaLinha()
         {//verifica primeira linha
             bool status = false;
             if ((tabuleiro[0, 0] == tabuleiro[0, 1] && tabuleiro[0, 2] == '?') || (tabuleiro[0, 0] == tabuleiro[0, 2] && tabuleiro[0, 1] == '?') || (tabuleiro[0, 1] == tabuleiro[0, 2] && tabuleiro[0, 0] == '?'))
             {
                 status = true;
-                //    for (int j = 0; j < tabuleiro.GetLength(1); j++)
-                //    {
-                //        if (tabuleiro[0, j] == '?')
-                //        {
-                //            tabuleiro[0, j] = 'X';
-                //            break;
-                //        }
-                //    }
             }
             //verifica a segunda linha
             else if ((tabuleiro[1, 0] == tabuleiro[1, 1] && tabuleiro[1, 2] == '?') || (tabuleiro[1, 0] == tabuleiro[1, 2] && tabuleiro[1, 1] == '?') || (tabuleiro[1, 1] == tabuleiro[1, 2] && tabuleiro[1, 0] == '?'))
             {
                 status = true;
-                //for (int j = 0; j < tabuleiro.GetLength(1); j++)
-                //{
-                //    if (tabuleiro[1, j] == '?')
-                //    {
-                //        tabuleiro[1, j] = 'X';
-                //        break;
-                //    }
-                //}
             }
             //verifica a terceira linha
             else if ((tabuleiro[2, 0] == tabuleiro[2, 1] && tabuleiro[2, 2] == '?') || (tabuleiro[2, 0] == tabuleiro[2, 2] && tabuleiro[2, 1] == '?') || (tabuleiro[2, 1] == tabuleiro[2, 2] && tabuleiro[0, 0] == '?'))
             {
                 status = true;
-                //for (int j = 0; j < tabuleiro.GetLength(1); j++)
-                //{
-                //    if (tabuleiro[2, j] == '?')
-                //    {
-                //        tabuleiro[2, j] = 'X';
-                //        break;
-                //    }
-                //}
             }
             //verifica primeira coluna
             else if ((tabuleiro[0, 0] == tabuleiro[1, 0] && tabuleiro[2, 0] == '?') || (tabuleiro[0, 0] == tabuleiro[2, 0] && tabuleiro[1, 0] == '?') || (tabuleiro[1, 0] == tabuleiro[2, 0] && tabuleiro[0, 0] == '?'))
             {
                 status = true;
-                //for (int i = 0; i < tabuleiro.GetLength(0); i++)
-                //{
-                //    if (tabuleiro[i, 0] == '?')
-                //    {
-                //        tabuleiro[i, 0] = 'X';
-                //        break;
-                //    }
-                //}
             }
             //verifica segunda coluna
             else if ((tabuleiro[0, 1] == tabuleiro[1, 1] && tabuleiro[2, 1] == '?') || (tabuleiro[0, 1] == tabuleiro[2, 1] && tabuleiro[1, 1] == '?') || (tabuleiro[1, 1] == tabuleiro[2, 1] && tabuleiro[0, 1] == '?'))
             {
                 status = true;
-                //for (int i = 0; i < tabuleiro.GetLength(0); i++)
-                //{
-                //    if (tabuleiro[i, 1] == '?')
-                //    {
-                //        tabuleiro[i, 1] = 'X';
-                //        break;
-                //    }
-                //}
             }
             //verifica terceira coluna
             else if ((tabuleiro[0, 2] == tabuleiro[1, 2] && tabuleiro[2, 2] == '?') || (tabuleiro[0, 2] == tabuleiro[2, 2] && tabuleiro[1, 2] == '?') || (tabuleiro[1, 2] == tabuleiro[2, 2] && tabuleiro[0, 2] == '?'))
             {
                 status = true;
-                //    for (int i = 0; i < tabuleiro.GetLength(0); i++)
-                //{
-                //    if (tabuleiro[i, 2] == '?')
-                //    {
-                //        tabuleiro[i, 2] = 'X';
-                //        break;
-                //    }
-                //}
             }
             //verifica diagonal principal
             else if ((tabuleiro[0, 0] == tabuleiro[1, 1] && tabuleiro[2, 2] == '?') || (tabuleiro[0, 0] == tabuleiro[2, 2] && tabuleiro[1, 1] == '?') || (tabuleiro[1, 1] == tabuleiro[2, 2] && tabuleiro[0, 0] == '?'))
             {
                 status = true;
-                //for (int i = 0; i < tabuleiro.GetLength(0); i++)
-                //{
-                //    if (tabuleiro[i, i] == '?')
-                //    {
-                //        tabuleiro[i, i] = 'X';
-                //        break;
-                //    }
-                //}
             }
             //verifica diagonal secundaria
             else if ((tabuleiro[0, 2] == tabuleiro[1, 1] && tabuleiro[2, 0] == '?') || (tabuleiro[0, 2] == tabuleiro[2, 0] && tabuleiro[1, 1] == '?') || (tabuleiro[1, 1] == tabuleiro[2, 0] && tabuleiro[0, 2] == '?'))
             {
                 status = true;
-                //for (int i = 0; i < tabuleiro.GetLength(0); i++)
-                //{
-                //    if (tabuleiro[i, i] == '?')
-                //    {
-                //        tabuleiro[i, i] = 'X';
-                //        break;
-                //    }
-                //}
             }
             return status;
         }
+
+        //metedo criadado para preencher a terceira posição caso o verificaLinha() fosse TRUE
         static void preencheTerceiraPosicao()
         {
             if ((tabuleiro[0, 0] == tabuleiro[0, 1] && tabuleiro[0, 2] == '?') || (tabuleiro[0, 0] == tabuleiro[0, 2] && tabuleiro[0, 1] == '?') || (tabuleiro[0, 1] == tabuleiro[0, 2] && tabuleiro[0, 0] == '?'))
@@ -512,37 +402,22 @@ namespace JogoDaVelha
 
         }
 
-        //pc faz jogada aleatória
-        static void jogadaAleatoriaPC()
-        {
-            for (int i = 0; i < tabuleiro.GetLength(0); i++)
-            {
-                for (int j = 0; j < tabuleiro.GetLength(1); j++)
-                {
-                    if (tabuleiro[i, j] == '?')
-                    {
-                        tabuleiro[i, j] = 'X';
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-
-        //metodo criado para exibir o tabuleiro depois do jogador escolher a possição
+        //metodo criado para exibir o tabuleiro depois do jogador escolher a posição
         static void exibirTabuleiro()
         {
             Console.WriteLine();
             for (int i = 0; i < tabuleiro.GetLength(0); i++)
             {
+                Console.Write("    ");
                 for (int j = 0; j < tabuleiro.GetLength(1); j++)
                 {
                     Console.Write(tabuleiro[i, j]);
                     if (j < 2) Console.Write(" | ");
                 }
                 Console.WriteLine();
-                if (i < 2) Console.WriteLine("----------");
+                if (i < 2) Console.WriteLine("    ----------");
             }
+            Console.WriteLine();
         }
 
         static bool verificaVencedor(char simbolo)
@@ -585,32 +460,5 @@ namespace JogoDaVelha
             }
             return status;
         }
-
-        static bool verificaEmpate()
-        {
-            bool verifica = true;
-
-            for (int i = 0; i < tabuleiro.GetLength(0); i++)
-            {
-                for (int j = 0; j < tabuleiro.GetLength(1); j++)
-                {
-                    if (tabuleiro[i, j] == '?')
-                    {
-                        verifica = false;
-                        break;
-                    }
-                }
-
-                if (!verifica)
-                {
-                    break;
-                }
-            }
-
-            return verifica;
-        }
-
-
-
     }
 }
